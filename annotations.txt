@@ -1,0 +1,2 @@
+# para indicar se o endpoint está ativo, será utilizado no cluster
+implementation 'org.springframework.boot:spring-boot-starter-actuator'
