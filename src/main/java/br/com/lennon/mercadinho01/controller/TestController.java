@@ -19,4 +19,11 @@ public class TestController {
 
         return ResponseEntity.ok("Name: " + name);
     }
+
+    @GetMapping("/color/{name}")
+    public ResponseEntity<?> colorTest(@PathVariable String name) {
+        LOG.info("Test Controller - color: {}", name);
+
+        return ResponseEntity.ok("Always " + name);
+    }
 }

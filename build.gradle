@@ -1,15 +1,71 @@
+buildscript {
+	ext {
+		springBootVersion = '3.3.0-SNAPSHOT'
+	}
+	repositories {
+		mavenCentral()
+		maven {
+			url "https://plugins.gradle.org/m2"
+		}
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("com.palantir.gradle.docker:gradle-docker:0.36.0")
+	}
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.0-SNAPSHOT'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id 'com.palantir.docker' version '0.36.0'
 }
 
-group = 'br.com.lennon'
-version = '0.0.1-SNAPSHOT'
+//group = 'br.com.lennon'
+group='lennomolliver'
+version = '0.0.2-SNAPSHOT'
+
 
 java {
 	sourceCompatibility = '17'
 }
+
+tasks.bootJar {enabled = true}
+tasks.jar {enabled = true}
+
+bootJar {
+	archiveBaseName = 'mercadinho'
+	//archiveVersion = '1.0.0'
+	//this.packageName='asdfa'
+}
+
+task unpack(type: Copy) {
+	dependsOn bootJar
+	//print(tasks.bootJar.outputs.files.singleFile)
+	from(zipTree(tasks.bootJar.outputs.files.singleFile))
+	into("build/dependency")
+}
+
+docker {
+	//print(bootJar.archiveBaseName.toString())
+	name "${project.group}/${bootJar.archiveBaseName.get()}"
+	//tags bootJar.archiveVersion.get()
+//	//tags "${bootJar.getArchiveVersion()}"
+	copySpec.from(tasks.unpack.outputs).into("dependency")
+	buildArgs(['DEPENDENCY':"dependency"])
+}
+
+//task buildDocker(type: Docker, dependsOn: build){
+//	push = false
+//	applicationName = bootJar.archiveBaseName
+//	dockerfile = file('src/main/docker/Dockerfile')
+//	doFirst {
+//		copy {
+//			from jar
+//			into stageDir
+//		}
+//	}
+//}
 
 repositories {
 	mavenCentral()
