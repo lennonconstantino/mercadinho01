@@ -26,6 +26,17 @@ public class Product {
 
     private float price;
 
+    @Column(length = 12, nullable = true)
+    private String color;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     public long getId() {
         return id;
     }
