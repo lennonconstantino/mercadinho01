@@ -51,7 +51,7 @@ public class ProductController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Product> deleteProduct(@PathVariable("id") long id) {
+    public ResponseEntity<Product> deleteProduct(@PathVariable("id") String id) {
         Optional<Product> optProduct = productRepository.findByCode(id);
         if (optProduct.isPresent()) {
             Product product = optProduct.get();
