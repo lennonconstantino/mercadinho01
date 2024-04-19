@@ -1,7 +1,10 @@
 package br.com.lennon.mercadinho01.controller;
 
+import br.com.lennon.mercadinho01.enums.EventType;
 import br.com.lennon.mercadinho01.model.Product;
+import br.com.lennon.mercadinho01.model.ProductEvent;
 import br.com.lennon.mercadinho01.repository.ProductRepository;
+import br.com.lennon.mercadinho01.service.ProductPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +16,12 @@ import java.util.Optional;
 @RequestMapping("/api/products")
 public class ProductController {
     ProductRepository productRepository;
+    ProductPublisher productPublisher;
 
     @Autowired
-    public ProductController(ProductRepository productRepository) {
+    public ProductController(ProductRepository productRepository, ProductPublisher productPublisher) {
         this.productRepository = productRepository;
+        this.productPublisher = productPublisher;
     }
 
     @GetMapping
@@ -35,6 +40,7 @@ public class ProductController {
     public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
         Product productCreated = productRepository.save(product);
 
+        productPublisher.publishProductEvent(productCreated, EventType.PRODUCT_CREATED, "matilde");
         return new ResponseEntity<Product>(productCreated, HttpStatus.CREATED);
     }
 
@@ -44,6 +50,7 @@ public class ProductController {
             product.setId(id);
             Product productUpdated = productRepository.save(product);
 
+            productPublisher.publishProductEvent(productUpdated, EventType.PRODUCT_UPDATED, "alice");
             return new ResponseEntity<Product>(productUpdated, HttpStatus.OK);
         }
 
@@ -57,6 +64,7 @@ public class ProductController {
             Product product = optProduct.get();
             productRepository.delete(product);
 
+            productPublisher.publishProductEvent(product, EventType.PRODUCT_DELETED, "bruna");
             return new ResponseEntity<Product>(product, HttpStatus.OK);
         }
 
