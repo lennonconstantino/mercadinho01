@@ -82,7 +82,8 @@ dependencies {
 	implementation 'software.amazon.awssdk:aws-core'
 	//implementation "software.amazon.awssdk:s3"
 	implementation "software.amazon.awssdk:sns"
-	implementation 'com.amazonaws:aws-java-sdk-sns:1.12.62'
+	implementation 'com.amazonaws:aws-java-sdk-sns:1.12.701'
+	implementation "com.amazonaws:aws-java-sdk-sqs:1.12.704"
 
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
