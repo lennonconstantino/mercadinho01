@@ -1,9 +1,12 @@
-package br.com.lennon.mercadinho01.config;
+package br.com.lennon.mercadinho01.config.local;
 
 
 import com.amazon.sqs.javamessaging.ProviderConfiguration;
 import com.amazon.sqs.javamessaging.SQSConnectionFactory;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,10 +20,8 @@ import javax.jms.Session;
 
 @Configuration
 @EnableJms
-@Profile("!local")
-public class JmsConfig {
-    @Value("${aws.region}")
-    private String awsRegion;
+@Profile("local")
+public class JmsConfigLocal {
 
     private SQSConnectionFactory sqsConnectionFactory;
 
@@ -29,7 +30,9 @@ public class JmsConfig {
         sqsConnectionFactory = new SQSConnectionFactory(
                 new ProviderConfiguration(),
                 AmazonSQSClientBuilder.standard()
-                        .withRegion(awsRegion)
+                        .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
+                                "http://localhost:4566",
+                                Regions.US_EAST_1.getName()))
                         .withCredentials(new DefaultAWSCredentialsProviderChain())
                         .build()
         );

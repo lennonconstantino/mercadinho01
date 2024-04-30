@@ -34,7 +34,7 @@ public class InvoiceConsumer {
         this.amazonS3 = amazonS3;
     }
 
-    @JmsListener(destination = "${aws.sqs.queue.product.events.name}")
+    @JmsListener(destination = "${aws.sqs.queue.invoice.events.name}")
     public void receiveS3Event(TextMessage textMessage) throws JMSException, IOException {
         SnsMessage snsMessage = objectMapper.readValue(textMessage.getText(), SnsMessage.class);
 
@@ -45,6 +45,9 @@ public class InvoiceConsumer {
     }
 
     private void processInvoiceNotification(S3EventNotification s3EventNotification) throws IOException {
+        if (s3EventNotification.getRecords() == null)
+            return;
+
         for (S3EventNotification.S3EventNotificationRecord record : s3EventNotification.getRecords()) {
             S3EventNotification.S3Entity s3Entity = record.getS3();
 
