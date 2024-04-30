@@ -27,7 +27,7 @@ public class InvoiceController {
 
     @Autowired
     public InvoiceController(AmazonS3 amazonS3) {
-        this.amazonS3 = amazonS3
+        this.amazonS3 = amazonS3;
     }
 
     @PostMapping
